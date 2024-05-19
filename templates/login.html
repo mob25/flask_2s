@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Категория - куртки{% endblock %}
+
+{% block body %}
+
+<form action="/cookie/" method="post">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+           {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <label>Имя</label>
+    <input type="text" name="name" placeholder="Введите имя"><br><br>
+    <label>Почта</label>
+    <input type="email" name="mail" placeholder="Введите почту"><br><br>
+    <input type="submit" value="Отправить">
+</form>
+
+{% endblock %}
