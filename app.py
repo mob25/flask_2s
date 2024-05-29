@@ -1,33 +1,32 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, request, make_response, redirect, url_for, session
 
 app = Flask(__name__)
+
+app.secret_key = '6d0d6a76c0e1522467f9cc1681db0a5972bd1c30a03832d1af4b71f381698f84'
 
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    if 'username' in session:
+        return redirect(url_for('hello', name = session["username"]))                         #f'Привет, {session["username"]}'
+    else:
+        return redirect(url_for('login'))
 
 
-@app.route('/login')
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
-    context = {'title': 'Приветствие'
-    }
-    return render_template("login.html")
+    if request.method == 'POST':
+        session['username'] = request.form.get('username')
+        return redirect(url_for('index'))
+    return render_template('login.html')
 
 
-@app.route('/hello')
-def shoes():
-    return render_template("hello.html")
-
-
-@app.route('/jackets')
-def jackets():
-    return render_template("jackets.html")
-
-
-@app.route('/baasploa')
-def baasploa():
-    return render_template("baasploa.html")
+@app.route('/hello', methods=['GET', 'POST'])
+def hello():
+    if request.method == 'POST':
+        session.pop('username', None)
+        return redirect(url_for('index'))
+    return render_template("hello.html", name = session["username"])
 
 
 @app.errorhandler(404)
